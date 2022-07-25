@@ -1,6 +1,6 @@
 
 group = "com.quickbird"
-version = "0.1"
+version = "1.0"
 
 buildscript {
     repositories {
