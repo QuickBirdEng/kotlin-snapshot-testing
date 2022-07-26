@@ -28,7 +28,7 @@ Do not hesitate to give feedback, ideas or improvements via an issue.
 
 # Examples
 
-<img src="https://quickbirdstudios.com/blog/wp-content/uploads/2022/07/button_changed-1024x876.png" alt="Example" width="600"/>
+<img src="https://quickbirdstudios.com/blog/wp-content/uploads/2022/07/screenshot_main_reference-1.png" alt="Example" width="600"/>
 
 An example test case for snapshot testing a screen of our example App:
 
@@ -68,7 +68,8 @@ When recording is turned on, a new reference will be saved and the test case fai
 the snapshots and setting the parameters back to false, all further runs will test against this 
 recording and show a diff when something changed.
 
-[Screenshot of diff]
+<img src="https://quickbirdstudios.com/blog/wp-content/uploads/2022/07/screenshot_settings_diff.png" alt="Diff" width="300"/>
+
 
 If you want to be able to snapshot test other properties of your projects, you can create new 
 personalized `Snapshotting` instances. 
