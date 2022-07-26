@@ -1,6 +1,7 @@
 # Kotlin Snapshot Testing
 
-[Article image]
+![Cover-Image](https://quickbirdstudios.com/blog/wp-content/uploads/2022/07/Snapshot-2-1024x518.jpeg)
+
 
 Probably every mobile developer knows these small but annoying bugs: 
 The general toolbar of the app is restyled, and it looks good on 29 out of the total 30 screens but
@@ -20,14 +21,14 @@ screenshot.
 
 Not only screenshots can be snapshotted, but everything that can be serialized (and even more)!
 
-For a detailed explanation see our related article [Kotlin Snapshot Testing](link).
+For a detailed explanation see our related article [Kotlin Snapshot Testing](https://quickbirdstudios.com/blog/snapshot-testing-kotlin).
 
 This is an early version and work in progress. 
 Do not hesitate to give feedback, ideas or improvements via an issue.
 
 # Examples
 
-[Screenshots]
+![Example](https://quickbirdstudios.com/blog/wp-content/uploads/2022/07/button_changed-1024x876.png)
 
 An example test case for snapshot testing a screen of our example App:
 
