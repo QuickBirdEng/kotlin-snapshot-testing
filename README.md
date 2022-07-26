@@ -1,6 +1,6 @@
 # Kotlin Snapshot Testing
 
-![Cover-Image](https://quickbirdstudios.com/blog/wp-content/uploads/2022/07/Snapshot-2-1024x518.jpeg)
+<img src="https://quickbirdstudios.com/blog/wp-content/uploads/2022/07/Snapshot-2-1024x518.jpeg" alt="Cover-Image" width="800"/>
 
 
 Probably every mobile developer knows these small but annoying bugs: 
@@ -28,7 +28,7 @@ Do not hesitate to give feedback, ideas or improvements via an issue.
 
 # Examples
 
-![Example](https://quickbirdstudios.com/blog/wp-content/uploads/2022/07/button_changed-1024x876.png)
+<img src="https://quickbirdstudios.com/blog/wp-content/uploads/2022/07/button_changed-1024x876.png" alt="Example" width="600"/>
 
 An example test case for snapshot testing a screen of our example App:
 
