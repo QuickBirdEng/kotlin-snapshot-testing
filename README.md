@@ -1,10 +1,10 @@
-# Kotlin Snapshot Testing
+# Kotlin Snapshot Testing Library
 
-Use Snapshot testing 📸 and avoid regressions! This is an extensible Kotlin Multiplatform library to easily create Snapshot tests for Android and other Kotlin applications. You can create snapshots of every serializable property, like screenshots or view hierachies, of your application! 
+<img src="https://quickbirdstudios.com/blog/wp-content/uploads/2022/07/Snapshot-2-1024x518.jpeg" alt="Cover-Image" width="700"/>
 
-<img src="https://quickbirdstudios.com/blog/wp-content/uploads/2022/07/Snapshot-2-1024x518.jpeg" alt="Cover-Image" width="800"/>
+This is an extensible Kotlin Multiplatform library to easily create Snapshot tests for Android and other Kotlin applications. You can create snapshots of every serializable property, like screenshots or view hierachies, of your application! 
 
-
+# How it works!
 Probably every mobile developer knows these small but annoying bugs: 
 The general toolbar of the app is restyled, and it looks good on 29 out of the total 30 screens but
 on one of the screens some UI elements moved unnoticed onto the wrong positions. Something like this
