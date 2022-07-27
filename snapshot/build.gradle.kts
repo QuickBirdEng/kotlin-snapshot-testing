@@ -3,6 +3,7 @@
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
+    `maven-publish`
 }
 
 kotlin {
@@ -50,5 +51,15 @@ android {
     defaultConfig {
         minSdk = 21
         targetSdk = 32
+    }
+}
+
+publishing {
+    repositories {
+        maven {
+            url = uri("https://jitpack.io")
+        }
+        mavenCentral()
+        mavenLocal()
     }
 }
