@@ -1,6 +1,10 @@
 # Kotlin Snapshot Testing
 
-Use Snapshot testing 📸 and avoid regressions! This is an extensible Kotlin Multiplatform library to easily create Snapshot tests for Android and other Kotlin applications. You can create snapshots of every serializable property, like screenshots or view hierachies, of your application! 
+[![](https://jitpack.io/v/QuickBirdEng/kotlin-snapshot-testing.svg)](https://jitpack.io/#QuickBirdEng/kotlin-snapshot-testing)
+
+Use Snapshot testing 📸 and avoid regressions! This is an extensible Kotlin Multiplatform library to 
+easily create Snapshot tests for Android and other Kotlin applications. You can create snapshots of 
+every serializable property, like screenshots or view hierachies, of your application! 
 
 <img src="https://quickbirdstudios.com/blog/wp-content/uploads/2022/07/Snapshot-2-1024x518.jpeg" alt="Cover-Image" width="800"/>
 
@@ -133,7 +137,7 @@ For more examples and a more detailed explanation see our related article
 ```kotlin
 allprojects {
     repositories {
-        ...
+        //...
         maven { url = uri("https://jitpack.io") }
     }
 }
@@ -144,8 +148,13 @@ allprojects {
 
 ```kotlin
 dependencies {
-    ...
-    implementation("com.github.quickbirdstudios.kotlin-snapshot-testing:kotlin-snapshot-testing:1.0.0")
+    //...
+    // Android:
+    implementation("com.github.quickbirdstudios.kotlin-snapshot-testing:snapshot-android:$version")
+    // Jvm:
+    implementation("com.github.quickbirdstudios.kotlin-snapshot-testing:snapshot-jvm:$version")
+    // Common:
+    implementation("com.github.quickbirdstudios.kotlin-snapshot-testing:snapshot:$version")
 }
 ```
 
