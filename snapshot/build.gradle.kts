@@ -8,7 +8,9 @@ plugins {
 
 kotlin {
     jvm()
-    android()
+    android {
+        publishLibraryVariants("release", "debug")
+    }
 
     sourceSets {
         val commonMain by getting {
@@ -59,7 +61,6 @@ publishing {
         maven {
             url = uri("https://jitpack.io")
         }
-        mavenCentral()
         mavenLocal()
     }
 }
