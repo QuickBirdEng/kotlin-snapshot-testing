@@ -126,7 +126,7 @@ class FileSnapshotTest : JUnitFileSnapshotTest() {
 ```
 
 For more examples and a more detailed explanation see our related article
-[Kotlin Snapshot Testing](link).
+[Kotlin Snapshot Testing](https://quickbirdstudios.com/blog/snapshot-testing-kotlin).
 
 # 🏃 Library Setup
 ## 1. Add the repository
