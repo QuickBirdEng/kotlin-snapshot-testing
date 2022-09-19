@@ -1,4 +1,4 @@
-# Kotlin Snapshot Testing Library
+# Snappy - Kotlin Snapshot Testing Library
 
 [![](https://jitpack.io/v/QuickBirdEng/kotlin-snapshot-testing.svg)](https://jitpack.io/#QuickBirdEng/kotlin-snapshot-testing)
 
