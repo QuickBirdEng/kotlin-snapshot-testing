@@ -2,9 +2,9 @@
 
 [![](https://jitpack.io/v/QuickBirdEng/kotlin-snapshot-testing.svg)](https://jitpack.io/#QuickBirdEng/kotlin-snapshot-testing)
 
-<img src="https://quickbirdstudios.com/blog/wp-content/uploads/2022/07/Snapshot-2-1024x518.jpeg" alt="Cover-Image" width="700"/>
+<img src="https://quickbirdstudios.com/blog/wp-content/uploads/2022/09/snappy3.png" alt="Cover-Image" width="700"/>
 
-This is an extensible Kotlin Multiplatform library to easily create Snapshot tests for Android and other Kotlin applications. You can create snapshots of every serializable property, like screenshots or view hierachies, of your application.
+Snappy is an extensible Kotlin Multiplatform library to easily create Snapshot tests for Android and other Kotlin applications. You can create snapshots of every serializable property, like screenshots or view hierachies, of your application.
 
 # How it works
 Probably every mobile developer knows these small but annoying bugs: 
@@ -16,7 +16,9 @@ Wouldn’t it be cool to have a convenient and easy way to find such regressions
 track of UI changes? Snapshot testing solves this by automatically comparing the previous and the 
 new build.
 
-With our library you simply define a test case for a property of your application that can be
+<img src="https://quickbirdstudios.com/blog/wp-content/uploads/2022/07/Snapshot-2-1024x518.jpeg" alt="Cover-Image" width="700"/>
+
+With our library Snappy you simply define a test case for a property of your application that can be
 serialized, for example, a screenshot of your main screen. By recording this property (aka taking a 
 screenshot) on the first run of your test case, a reference is saved. On every following run of your 
 test suite, the property is checked against the reference. If something changes and for instance, 
@@ -157,12 +159,12 @@ dependencies {
 ```
 
 # 👤 Author
-This Kotlin library is created with ❤️ by [QuickBird Studios](https://quickbirdstudios.com/).
+The Snappy library is created with ❤️ by [QuickBird Studios](https://quickbirdstudios.com/).
 
 # ❤️ Contributing
 Open an issue if you need help, if you found a bug, or if you want to discuss a feature request.
 
-Open a PR if you want to make changes to our snapshot testing library.
+Open a PR if you want to make changes to our snapshot testing library Snappy.
 
 # 📃 License
 kotlin-snapshot-testing is released under an MIT license. 
