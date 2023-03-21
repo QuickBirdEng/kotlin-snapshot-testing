@@ -2,7 +2,7 @@
 
 [![](https://jitpack.io/v/QuickBirdEng/kotlin-snapshot-testing.svg)](https://jitpack.io/#QuickBirdEng/kotlin-snapshot-testing)
 
-<img src="https://quickbirdstudios.com/blog/wp-content/uploads/2022/09/snappy3.png" alt="Cover-Image" width="700"/>
+<img src="https://quickbirdstudios.com/wp-content/uploads/2022/11/snapshottesting-android.png" alt="Cover-Image" width="700"/>
 
 Snappy is an extensible Kotlin Multiplatform library to easily create Snapshot tests for Android and other Kotlin applications. You can create snapshots of every serializable property, like screenshots or view hierachies, of your application.
 
@@ -16,7 +16,7 @@ Wouldn’t it be cool to have a convenient and easy way to find such regressions
 track of UI changes? Snapshot testing solves this by automatically comparing the previous and the 
 new build.
 
-<img src="https://quickbirdstudios.com/blog/wp-content/uploads/2022/07/Snapshot-2-1024x518.jpeg" alt="Cover-Image" width="700"/>
+<img src="https://quickbirdstudios.com/wp-content/uploads/2022/07/button_changed-1024x876.png" alt="Cover-Image" width="700"/>
 
 With our library Snappy you simply define a test case for a property of your application that can be
 serialized, for example, a screenshot of your main screen. By recording this property (aka taking a 
@@ -34,7 +34,7 @@ Do not hesitate to give feedback, ideas or improvements via an issue.
 
 # Examples
 
-<img src="https://quickbirdstudios.com/blog/wp-content/uploads/2022/07/screenshot_main_reference-1.png" alt="Example" width="600"/>
+<img src="https://quickbirdstudios.com/wp-content/uploads/2022/07/screenshot_main_reference-1-1024x684.png" alt="Example" width="600"/>
 
 An example test case for snapshot testing a screen of our example App:
 
@@ -74,7 +74,7 @@ When recording is turned on, a new reference will be saved and the test case fai
 the snapshots and setting the parameters back to false, all further runs will test against this 
 recording and show a diff when something changed.
 
-<img src="https://quickbirdstudios.com/blog/wp-content/uploads/2022/07/screenshot_settings_diff.png" alt="Diff" width="300"/>
+<img src="https://quickbirdstudios.com/wp-content/uploads/2022/07/screenshot_settings_diff-1-980x655.png" alt="Diff" width="600"/>
 
 
 If you want to be able to snapshot test other properties of your projects, you can create new 
