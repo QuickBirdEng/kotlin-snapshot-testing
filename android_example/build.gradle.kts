@@ -3,13 +3,14 @@ plugins {
     id("org.jetbrains.kotlin.android")
 }
 
+@Suppress("UnstableApiUsage")
 android {
-    compileSdk = 32
+    compileSdk = 33
 
     defaultConfig {
         applicationId = "com.quickbird.android_example"
         minSdk = 21
-        targetSdk = 32
+        targetSdk = 33
         versionCode = 1
         versionName = "1.0"
 
@@ -38,30 +39,31 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.2.0"
+        kotlinCompilerExtensionVersion = "1.4.4"
     }
+    namespace = "com.quickbird.android_example"
 }
 
 dependencies {
-    implementation("androidx.core:core-ktx:1.8.0")
+    implementation("androidx.core:core-ktx:1.9.0")
 
-    implementation("androidx.activity:activity-compose:1.5.0")
+    implementation("androidx.activity:activity-compose:1.7.0")
 
-    implementation("androidx.compose.ui:ui:1.2.0-rc03")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.2.0-rc03")
-    implementation("androidx.compose.ui:ui-tooling:1.2.0-rc03")
-    implementation("androidx.compose.material:material:1.2.0-rc03")
-    implementation("androidx.compose.material:material-icons-extended:1.2.0-rc03")
-    implementation("androidx.compose.foundation:foundation:1.2.0-rc03")
+    implementation("androidx.compose.ui:ui:1.4.0")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.4.0")
+    implementation("androidx.compose.ui:ui-tooling:1.4.0")
+    implementation("androidx.compose.material:material:1.4.0")
+    implementation("androidx.compose.material:material-icons-extended:1.4.0")
+    implementation("androidx.compose.foundation:foundation:1.4.0")
 
-    implementation("androidx.navigation:navigation-compose:2.5.0")
+    implementation("androidx.navigation:navigation-compose:2.5.3")
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
-    implementation("com.google.android.material:material:1.7.0-alpha02")
-    implementation("androidx.core:core-splashscreen:1.0.0-rc01")
+    implementation("com.google.android.material:material:1.8.0")
+    implementation("androidx.core:core-splashscreen:1.0.0")
 
     testImplementation(project(":snapshot"))
     testImplementation("junit:junit:4.13.2")
 
     androidTestImplementation(project(":snapshot"))
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.2.0-rc01")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.4.0")
 }

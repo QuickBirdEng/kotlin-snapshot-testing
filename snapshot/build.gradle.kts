@@ -15,7 +15,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.3")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
             }
         }
         val commonTest by getting {
@@ -27,18 +27,15 @@ kotlin {
         val jvmMain by getting {
             dependencies {
                 implementation(kotlin("test-junit"))
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.3")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4")
             }
         }
         val jvmTest by getting
         val androidMain by getting {
             dependsOn(jvmMain)
             dependencies {
-                implementation("androidx.compose.ui:ui-test-junit4:1.2.0-rc01")
+                implementation("androidx.compose.ui:ui-test-junit4:1.4.0")
             }
-        }
-        val androidTest by getting {
-            dependsOn(jvmTest)
         }
 
         all {
@@ -47,13 +44,14 @@ kotlin {
     }
 }
 
+@Suppress("UnstableApiUsage")
 android {
-    compileSdk = 32
+    compileSdk = 33
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     defaultConfig {
         minSdk = 21
-        targetSdk = 32
     }
+    namespace = "com.quickbird.snapshot"
 }
 
 publishing {
