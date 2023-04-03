@@ -44,4 +44,22 @@ class ComposeScreenshotTest : AndroidFileSnapshotTest() {
             .composeStringTree
             .snapshotToFilesDir(composeTestRule)
     }
+
+    @Test
+    fun mainScreenActivityScreenshot() = runTest {
+        Snapshotting
+            .composeActivityScreenshot
+            .fileSnapshotting
+            .snapshotToFilesDir(composeTestRule)
+    }
+
+    @Test
+    fun settingsScreenActivityScreenshot() = runTest {
+        composeTestRule.onNodeWithTag("Settings").performClick()
+
+        Snapshotting
+            .composeActivityScreenshot
+            .fileSnapshotting
+            .snapshotToFilesDir(composeTestRule)
+    }
 }
