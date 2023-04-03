@@ -6,7 +6,7 @@ import android.view.View
 
 val Snapshotting.Companion.viewScreenshot
     get() = Snapshotting(
-        diffing = Diffing.bitmap(colorDiffing = Diffing.intMean),
+        diffing = Diffing.bitmap(colorDiffing = Diffing.colorMean),
         snapshot = { view: View ->
             Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888).apply {
                 view.draw(Canvas(this))

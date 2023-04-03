@@ -11,7 +11,7 @@ data class AndroidSnapshotTestFiles(
     private val directory: AndroidSnapshotDirectory,
     private val appBundle: String,
     private val diffFilePrefix: String = "diff",
-    private val androidDirectory: String = "/data/data/$appBundle/files/snapshots",
+    private val androidDirectory: String = "/data/data/$appBundle/files/snapshot",
     private val tmpAndroidDirectory: String = "/sdcard/snapshot_tmp",
     private val deviceIds: List<String> = listAdbDevices()
 ) {

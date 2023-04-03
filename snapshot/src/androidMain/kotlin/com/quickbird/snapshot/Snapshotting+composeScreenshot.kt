@@ -9,7 +9,7 @@ import androidx.compose.ui.test.onRoot
 
 val Snapshotting.Companion.composeNodeScreenshot
     get() = Snapshotting(
-        diffing = Diffing.bitmap(colorDiffing = Diffing.intMean),
+        diffing = Diffing.bitmap(colorDiffing = Diffing.colorMean),
         snapshot = { node: SemanticsNodeInteraction -> node.captureToImage().asAndroidBitmap() }
     )
 
