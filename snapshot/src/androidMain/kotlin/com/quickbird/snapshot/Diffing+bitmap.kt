@@ -37,13 +37,13 @@ val Diffing.Companion.intMean
     }
 
 private infix fun Bitmap.differenceTo(other: Bitmap): Double {
-    val thisBytes = this.asByteArray()
-    val otherBytes = other.asByteArray()
-    if (thisBytes == null || otherBytes == null || thisBytes.size != otherBytes.size) return 100.0
+    val thisPixels = this.pixels
+    val otherPixels = other.pixels
+    if (thisPixels.size != otherPixels.size) return 100.0
 
-    val differentBytes = thisBytes
-        .zip(otherBytes, Byte::equals)
+    val differentPixelCount = thisPixels
+        .zip(otherPixels, Color::equals)
         .count { !it }
 
-    return differentBytes.toDouble() / thisBytes.size
+    return differentPixelCount.toDouble() / thisPixels.size
 }

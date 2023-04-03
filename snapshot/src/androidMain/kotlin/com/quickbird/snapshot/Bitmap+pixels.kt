@@ -10,3 +10,10 @@ internal fun Bitmap.updatePixels(update: (x: Int, y: Int, color: Color) -> Color
         }
     }
 }
+
+internal val Bitmap.pixels
+    get() = (0 until width).flatMap { x ->
+        (0 until height).map { y ->
+            getPixel(x, y).color
+        }
+    }
