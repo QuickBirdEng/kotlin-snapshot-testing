@@ -5,9 +5,10 @@ import android.graphics.Color as AndroidColor
 
 fun Diffing.Companion.bitmap(
     colorDiffing: Diffing<Color>,
-    tolerance: Double = 0.0
+    tolerance: Double = 0.0,
+    perceptualTolerance: Double = 0.0
 ) = Diffing<Bitmap> { first, second ->
-    val difference = first differenceTo second
+    val difference = first.differenceTo(second, perceptualTolerance)
 
     if (difference <= tolerance) null
     else first.copy(first.config, true).apply {
@@ -36,13 +37,13 @@ val Diffing.Companion.intMean
         else first / 2 + second / 2
     }
 
-private infix fun Bitmap.differenceTo(other: Bitmap): Double {
+private fun Bitmap.differenceTo(other: Bitmap, perceptualTolerance: Double): Double {
     val thisPixels = this.pixels
     val otherPixels = other.pixels
     if (thisPixels.size != otherPixels.size) return 100.0
 
     val differentPixelCount = thisPixels
-        .zip(otherPixels, Color::equals)
+        .zip(otherPixels) { a, b -> a.isSimilar(b, perceptualTolerance) }
         .count { !it }
 
     return differentPixelCount.toDouble() / thisPixels.size
