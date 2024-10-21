@@ -1,16 +1,13 @@
 package com.quickbird.snapshot
 
+import android.util.Log
 import androidx.annotation.ColorInt
 import kotlin.math.cbrt
 import kotlin.math.min
 import kotlin.math.pow
 import kotlin.math.sqrt
 
-data class Color(@ColorInt val value: Int) {
-    fun equals(other: Color, any: Any) {
-
-    }
-}
+data class Color(@ColorInt val value: Int)
 
 val @receiver:ColorInt Int.color
     get() = Color(this)
@@ -71,9 +68,11 @@ private fun Color.difference(other: Color): Double {
     val sc = 1.0 + 0.045 * cBar
     val sh = 1.0 + 0.015 * cBar
 
-    return sqrt(
+    val deltaE = sqrt(
         (deltaL / sl).pow(2) +
                 (deltaC / (kc * sc)).pow(2) +
                 (deltaH / (kh * sh)).pow(2)
     )
+    Log.d("SnapshotDiffing", "Delta E: $deltaE")
+    return deltaE
 }

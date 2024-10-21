@@ -18,7 +18,7 @@ fun Diffing.Companion.bitmap(
     } else {
         var log = "Actual image precision $difference is greater than required $tolerance"
         if (maximumDeltaE != null) log += ", Actual perceptual precision $maximumDeltaE is greater than required $perceptualTolerance"
-        Log.e("Snapshot diffing", log)
+        Log.e("SnapshotDiffing", log)
 
         first.copy(first.config, true).apply {
             updatePixels { x, y, color ->
