@@ -81,28 +81,31 @@ private fun Color.toLAB(): DoubleArray {
     var yr = y / Yr
     var zr = z / Zr
 
-    xr = if ( xr > 0.008856 ) {
+    val e = 0.008856
+    val k = 903.3
+
+    val fx = if ( xr > e ) {
         xr.pow(1/3)
     } else {
-        ((7.787 * xr) + 16 / 116.0)
+        ((k * xr) + 16 / 116.0)
     }
 
-    yr = if ( yr > 0.008856 ) {
+    val fy = if ( yr > e ) {
         yr.pow(1/3)
     } else {
-        ((7.787 * yr) + 16 / 116.0)
+        ((k * yr) + 16 / 116.0)
     }
 
-    zr = if ( zr > 0.008856 ) {
+    val fz = if ( zr > e ) {
         zr.pow(1 / 3)
     } else {
-        ((7.787 * zr) + 16 / 116.0)
+        ((k * zr) + 16 / 116.0)
     }
 
     return doubleArrayOf(
-        (116 * yr) - 16,
-        500 * (xr - yr),
-        200 * (yr - zr)
+        (116 * fy) - 16,
+        500 * (fx - fy),
+        200 * (fy - fz)
     ).also {
         Log.d("SnapshotDiffing", "L: ${it[0]}, A: ${it[1]}, B: ${it[2]}")
     }
