@@ -1,10 +1,10 @@
 package com.quickbird.snapshot
 
+import android.annotation.SuppressLint
+import android.graphics.Color as AndroidColor
 import android.util.Log
 import androidx.annotation.ColorInt
-import kotlin.math.PI
-import kotlin.math.atan2
-import kotlin.math.cbrt
+import kotlin.collections.component1
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.pow
@@ -19,82 +19,127 @@ fun Color.deltaE(other: Color): Double {
     if (this == other) {
         return 0.0
     }
-    // Compute the Delta E 2000 difference between the two colors in the CIELAB color space and return whether it's within the perceptual tolerance
+    // Compute the Delta E 2000 difference between the two colors in the CIE Lch color space and return whether it's within the perceptual tolerance
     //
     return min(this.difference(other) / 100, 1.0)
 }
 
-// Convert the color to the Lch color space
+// Convert the color to the CIE XYZ color space
+// http://www.brucelindbloom.com/index.html?Calc.html
 //
-private fun Color.toLch(): DoubleArray {
-    val lab = this.toLAB()
-    val l = lab[0]
-    val a = lab[1]
-    val b = lab[2]
+@SuppressLint("NewApi")
+private fun Color.toXYZ(): DoubleArray {
+    var r = AndroidColor.red(this.value) / 255.0
+    var g = AndroidColor.green(this.value) / 255.0
+    var b = AndroidColor.blue(this.value) / 255.0
 
-    val c = sqrt(a * a + b * b)
-    val h = atan2(b, a) * (180 / PI)
-    return doubleArrayOf(l, c, if (h >= 0) h else h + 360)
+    r = if (r > 0.04045) {
+        ((r + 0.055) / 1.055).pow(2.4)
+    } else {
+        r / 12.92;
+    }
+
+    g = if (g > 0.04045) {
+        ((g + 0.055) / 1.055).pow(2.4);
+    } else {
+        g / 12.92;
+    }
+
+    b = if (b > 0.04045) {
+        ((b + 0.055) / 1.055).pow(2.4);
+    } else {
+        b / 12.92;
+    }
+
+    r *= 100;
+    g *= 100;
+    b *= 100;
+    Log.d("SnapshotDiffing", "R: $r, G: $g, B: $b");
+
+    return doubleArrayOf(
+        (0.4124 * r + 0.3576 * g + 0.1805 * b),
+        (0.2126 * r + 0.7152 * g + 0.0722 * b),
+        (0.0193 * r + 0.1192 * g + 0.9505 * b)
+    ).also {
+        Log.d("SnapshotDiffing", "X: ${it[0]}, Y: ${it[1]}, Z: ${it[2]}")
+    }
 }
 
-// Convert the color to the CIELAB color space
+// Convert the color to the CIE LAB color space
+// http://www.brucelindbloom.com/index.html?Calc.html
 //
+@SuppressLint("NewApi")
 private fun Color.toLAB(): DoubleArray {
-    val r = (value shr 16 and 0xff) / 255.0
-    val g = (value shr 8 and 0xff) / 255.0
-    val b = (value and 0xff) / 255.0
+    val (x, y, z) = this.toXYZ()
 
-    val x = r * 0.4124564 + g * 0.3575761 + b * 0.1804375
-    val y = r * 0.2126729 + g * 0.7151522 + b * 0.0721750
-    val z = r * 0.0193339 + g * 0.1191920 + b * 0.9503041
+    val Xr = 95.047
+    val Yr = 100.0
+    val Zr = 108.883
 
-    val l1 = 116 * f(y / 1.0) - 16
-    val a1 = 500 * (f(x / 0.95047) - f(y / 1.0))
-    val b1 = 200 * (f(y / 1.0) - f(z / 1.08883))
+    var xr = x / Xr
+    var yr = y / Yr
+    var zr = z / Zr
 
-    return doubleArrayOf(l1, a1, b1)
+    if ( xr > 0.008856 ) {
+        xr = xr.pow(1/3)
+    } else {
+        xr = ((7.787 * xr) + 16 / 116.0)
+    }
+
+    if ( yr > 0.008856 ) {
+        yr = yr.pow(1/3)
+    } else {
+        yr = ((7.787 * yr) + 16 / 116.0)
+    }
+
+    if ( zr > 0.008856 )
+        zr = zr.pow(1/3)
+    else
+    zr = ((7.787 * zr) + 16 / 116.0)
+
+    return doubleArrayOf(
+        (116 * yr) - 16,
+        500 * (xr - yr),
+        200 * (yr - zr)
+    ).also {
+        Log.d("SnapshotDiffing", "L: ${it[0]}, A: ${it[1]}, B: ${it[2]}")
+    }
 }
 
-private fun f(t: Double): Double {
-    return if (t > 0.008856) cbrt(t) else (7.787 * t) + (16 / 116.0)
-}
-
-// Calculates CIEDE2000 (Delta E 2000) between two colors in the CIELAB color space returning a value between 0-100 (0 means no difference, 100 means completely opposite)
-//
-// This is the most recent and accurate formula, which includes corrections for perceptual uniformity
-// Platform difference: iOS uses CIE94 (Delta E 1994) for color difference calculations
+// CalculatesDelta E (CIE 1994) between two colors in the CIE LAB color space returning a value between 0-100 (0 means no difference, 100 means completely opposite)
+// http://www.brucelindbloom.com/index.html?Eqn_DeltaE_CIE94.html
 //
 private fun Color.difference(other: Color): Double {
-    val (L1, C1, H1) = this.toLch()
-    val (L2, C2, H2) = other.toLch()
+    val (l1, a1, b1) = this.toLAB()
+    val (l2, a2, b2) = other.toLAB()
 
-    val deltaL = L2 - L1
-    val meanL = (L1 + L2) / 2
+    val deltaL = l1 - l2
 
-    val deltaC = C2 - C1
-    val meanC = (C1 + C2) / 2
+    val c1 = sqrt(a1.pow(2) + b1.pow(2))
+    val c2 = sqrt(a2.pow(2) + b2.pow(2))
+    val deltaC = c1 - c2
 
-    val deltaH = H2 - H1
-    val meanH = (H1 + H2) / 2
+    val deltaA = a1 - a2
+    val deltaB = b1 - b2
+    // TODO: The value for ΔH is not actually needed. Rather, ΔH^2 is needed instead. So an optimization might be to avoid the square root altogether.
+    //
+    val deltaH = sqrt(max(deltaA.pow(2) + deltaB.pow(2) - deltaC.pow(2), 0.0))
 
-    val T = 1 - 0.17 * kotlin.math.cos(Math.toRadians(meanH - 30)) +
-            0.24 * kotlin.math.cos(Math.toRadians(2 * meanH)) +
-            0.32 * kotlin.math.cos(Math.toRadians(3 * meanH + 6)) -
-            0.20 * kotlin.math.cos(Math.toRadians(4 * meanH - 63))
+    val sl = 1
+    val kl = 1
+    val kc = 1
+    val kh = 1
+    val k1 = 0.045
+    val k2 = 0.015
 
-    val deltaTheta = 30 * kotlin.math.exp(-((meanH - 275) / 25).pow(2.0))
-    val Rc = 2 * sqrt((meanC.pow(7.0)) / (meanC.pow(7.0) + 25.0.pow(7.0)))
-    val Sl = 1 + (0.015 * (meanL - 50).pow(2.0)) / sqrt(20 + (meanL - 50).pow(2.0))
-    val Sc = 1 + 0.045 * meanC
-    val Sh = 1 + 0.015 * meanC * T
-    val Rt = -kotlin.math.sin(Math.toRadians(2 * deltaTheta)) * Rc
+    val sc = 1 + k1 * c1
+    val sh = 1 + k2 * c1
 
-    val deltaE = sqrt(
-        (deltaL / Sl).pow(2.0) +
-        (deltaC / Sc).pow(2.0) +
-        (deltaH / Sh).pow(2.0) +
-        Rt * (deltaC / Sc) * (deltaH / Sh)
-    )
-    Log.d("SnapshotDiffing", "Delta E: $deltaE")
-    return deltaE
+    return sqrt(
+        (deltaL / (kl * sl)).pow(2) +
+                (deltaC / (kc * sc)).pow(2) +
+                (deltaH / (kh * sh)).pow(2)
+    ).also {
+        Log.d("SnapshotDiffing", "ΔE: $it")
+    }
 }

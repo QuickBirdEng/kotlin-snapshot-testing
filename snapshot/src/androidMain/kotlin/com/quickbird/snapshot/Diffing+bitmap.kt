@@ -6,10 +6,11 @@ import android.graphics.Color as AndroidColor
 
 private var maximumDeltaE: Double? = null
 
+
 fun Diffing.Companion.bitmap(
     colorDiffing: Diffing<Color>,
-    tolerance: Double = 0.0,
-    perceptualTolerance: Double = 0.0
+    tolerance: Double = 0.0,  // 0.0 means exact match, 1.0 means completely different
+    perceptualTolerance: Double = 0.0  // 0.0 means exact match, 1.0 means completely different
 ) = Diffing<Bitmap> { first, second ->
     val difference = first.differenceTo(second, perceptualTolerance)
 
@@ -54,8 +55,8 @@ private fun Bitmap.differenceTo(other: Bitmap, perceptualTolerance: Double): Dou
 
     val deltaEPixels = thisPixels
         .zip(otherPixels, Color::deltaE)
-    val deltaEDifference = deltaEPixels.count { it < perceptualTolerance }
+    val pixelDifferenceCount = deltaEPixels.count { it > (perceptualTolerance * 100) }
     maximumDeltaE = deltaEPixels.maxOrNull() ?: 0.0
 
-    return deltaEDifference.toDouble() / thisPixels.size
+    return pixelDifferenceCount.toDouble() / thisPixels.size
 }
