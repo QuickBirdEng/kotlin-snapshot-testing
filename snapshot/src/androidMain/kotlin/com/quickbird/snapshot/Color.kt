@@ -15,13 +15,13 @@ data class Color(@ColorInt val value: Int) {
 val @receiver:ColorInt Int.color
     get() = Color(this)
 
-fun Color.isSimilar(other: Color, perceptualTolerance: Double): Boolean {
+fun Color.deltaE(other: Color): Double {
     if (this == other) {
-        return true
+        return 0.0
     }
     // Compute the Delta E 2000 difference between the two colors in the CIELAB color space and return whether it's within the perceptual tolerance
     //
-    return min(this.difference(other) / 100, 1.0) <= perceptualTolerance
+    return min(this.difference(other) / 100, 1.0)
 }
 
 // Convert the color to the CIELAB color space
