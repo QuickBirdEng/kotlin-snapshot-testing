@@ -2,7 +2,10 @@ package com.quickbird.snapshot
 
 import android.util.Log
 import androidx.annotation.ColorInt
+import kotlin.math.PI
+import kotlin.math.atan2
 import kotlin.math.cbrt
+import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.pow
 import kotlin.math.sqrt
@@ -19,6 +22,19 @@ fun Color.deltaE(other: Color): Double {
     // Compute the Delta E 2000 difference between the two colors in the CIELAB color space and return whether it's within the perceptual tolerance
     //
     return min(this.difference(other) / 100, 1.0)
+}
+
+// Convert the color to the Lch color space
+//
+private fun Color.toLch(): DoubleArray {
+    val lab = this.toLAB()
+    val l = lab[0]
+    val a = lab[1]
+    val b = lab[2]
+
+    val c = sqrt(a * a + b * b)
+    val h = atan2(b, a) * (180 / PI)
+    return doubleArrayOf(l, c, if (h >= 0) h else h + 360)
 }
 
 // Convert the color to the CIELAB color space
@@ -49,29 +65,35 @@ private fun f(t: Double): Double {
 // Platform difference: iOS uses CIE94 (Delta E 1994) for color difference calculations
 //
 private fun Color.difference(other: Color): Double {
-    val lab1 = this.toLAB()
-    val lab2 = other.toLAB()
+    val (L1, C1, H1) = this.toLch()
+    val (L2, C2, H2) = other.toLch()
 
-    val deltaL = lab1[0] - lab2[0]
-    val lBar = (lab1[0] + lab2[0]) / 2.0
-    val c1 = sqrt(lab1[1].pow(2) + lab1[2].pow(2))
-    val c2 = sqrt(lab2[1].pow(2) + lab2[2].pow(2))
-    val cBar = (c1 + c2) / 2.0
-    val deltaC = c1 - c2
-    val deltaA = lab1[1] - lab2[1]
-    val deltaB = lab1[2] - lab2[2]
-    val deltaH = sqrt(deltaA.pow(2) + deltaB.pow(2) - deltaC.pow(2))
+    val deltaL = L2 - L1
+    val meanL = (L1 + L2) / 2
 
-    val sl = 1.0
-    val kc = 1.0
-    val kh = 1.0
-    val sc = 1.0 + 0.045 * cBar
-    val sh = 1.0 + 0.015 * cBar
+    val deltaC = C2 - C1
+    val meanC = (C1 + C2) / 2
+
+    val deltaH = H2 - H1
+    val meanH = (H1 + H2) / 2
+
+    val T = 1 - 0.17 * kotlin.math.cos(Math.toRadians(meanH - 30)) +
+            0.24 * kotlin.math.cos(Math.toRadians(2 * meanH)) +
+            0.32 * kotlin.math.cos(Math.toRadians(3 * meanH + 6)) -
+            0.20 * kotlin.math.cos(Math.toRadians(4 * meanH - 63))
+
+    val deltaTheta = 30 * kotlin.math.exp(-((meanH - 275) / 25).pow(2.0))
+    val Rc = 2 * sqrt((meanC.pow(7.0)) / (meanC.pow(7.0) + 25.0.pow(7.0)))
+    val Sl = 1 + (0.015 * (meanL - 50).pow(2.0)) / sqrt(20 + (meanL - 50).pow(2.0))
+    val Sc = 1 + 0.045 * meanC
+    val Sh = 1 + 0.015 * meanC * T
+    val Rt = -kotlin.math.sin(Math.toRadians(2 * deltaTheta)) * Rc
 
     val deltaE = sqrt(
-        (deltaL / sl).pow(2) +
-                (deltaC / (kc * sc)).pow(2) +
-                (deltaH / (kh * sh)).pow(2)
+        (deltaL / Sl).pow(2.0) +
+        (deltaC / Sc).pow(2.0) +
+        (deltaH / Sh).pow(2.0) +
+        Rt * (deltaC / Sc) * (deltaH / Sh)
     )
     Log.d("SnapshotDiffing", "Delta E: $deltaE")
     return deltaE
