@@ -5,6 +5,7 @@ import android.graphics.Color as AndroidColor
 import android.util.Log
 import androidx.annotation.ColorInt
 import kotlin.collections.component1
+import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.pow
@@ -40,20 +41,20 @@ private fun Color.toXYZ(): DoubleArray {
     }
 
     g = if (g > 0.04045) {
-        ((g + 0.055) / 1.055).pow(2.4);
+        ((g + 0.055) / 1.055).pow(2.4)
     } else {
         g / 12.92;
     }
 
     b = if (b > 0.04045) {
-        ((b + 0.055) / 1.055).pow(2.4);
+        ((b + 0.055) / 1.055).pow(2.4)
     } else {
         b / 12.92;
     }
 
-    r *= 100;
-    g *= 100;
-    b *= 100;
+    r *= 100
+    g *= 100
+    b *= 100
     Log.d("SnapshotDiffing", "R: $r, G: $g, B: $b");
 
     return doubleArrayOf(
@@ -80,22 +81,23 @@ private fun Color.toLAB(): DoubleArray {
     var yr = y / Yr
     var zr = z / Zr
 
-    if ( xr > 0.008856 ) {
-        xr = xr.pow(1/3)
+    xr = if ( xr > 0.008856 ) {
+        xr.pow(1/3)
     } else {
-        xr = ((7.787 * xr) + 16 / 116.0)
+        ((7.787 * xr) + 16 / 116.0)
     }
 
-    if ( yr > 0.008856 ) {
-        yr = yr.pow(1/3)
+    yr = if ( yr > 0.008856 ) {
+        yr.pow(1/3)
     } else {
-        yr = ((7.787 * yr) + 16 / 116.0)
+        ((7.787 * yr) + 16 / 116.0)
     }
 
-    if ( zr > 0.008856 )
-        zr = zr.pow(1/3)
-    else
-    zr = ((7.787 * zr) + 16 / 116.0)
+    zr = if ( zr > 0.008856 ) {
+        zr.pow(1 / 3)
+    } else {
+        ((7.787 * zr) + 16 / 116.0)
+    }
 
     return doubleArrayOf(
         (116 * yr) - 16,
@@ -121,9 +123,7 @@ private fun Color.difference(other: Color): Double {
 
     val deltaA = a1 - a2
     val deltaB = b1 - b2
-    // TODO: The value for ΔH is not actually needed. Rather, ΔH^2 is needed instead. So an optimization might be to avoid the square root altogether.
-    //
-    val deltaH = sqrt(max(deltaA.pow(2) + deltaB.pow(2) - deltaC.pow(2), 0.0))
+    val deltaH = sqrt(abs(deltaA.pow(2) + deltaB.pow(2) - deltaC.pow(2)))
 
     val sl = 1
     val kl = 1
