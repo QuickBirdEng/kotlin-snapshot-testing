@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.annotation.ColorInt
 import kotlin.collections.component1
 import kotlin.math.abs
+import kotlin.math.cbrt
 import kotlin.math.min
 import kotlin.math.pow
 import kotlin.math.sqrt
@@ -89,25 +90,25 @@ private fun Color.toLAB(): DoubleArray {
     val k = 903.3
 
     val fx = if ( xr > e ) {
-        xr.pow(1 / 3)
+        cbrt(xr)
     } else {
-        ((k * xr) + 16 / 116.0)
+        ((k * xr) + 16) / 116.0
     }
 
     val fy = if ( yr > e ) {
-        yr.pow(1 / 3)
+        cbrt(yr)
     } else {
-        ((k * yr) + 16 / 116.0)
+        ((k * yr) + 16) / 116.0
     }
 
     val fz = if ( zr > e ) {
-        zr.pow(1 / 3)
+        cbrt(zr)
     } else {
-        ((k * zr) + 16 / 116.0)
+        ((k * zr) + 16) / 116.0
     }
 
     return doubleArrayOf(
-        (116 * fy) - 16,
+        116 * fy - 16,
         500 * (fx - fy),
         200 * (fy - fz)
     ).also {
