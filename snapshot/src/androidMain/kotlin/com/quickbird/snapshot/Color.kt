@@ -16,29 +16,31 @@ data class Color(@ColorInt val value: Int)
 val @receiver:ColorInt Int.color
     get() = Color(this)
 
+/**
+ * Calculates [Delta E (1994)](http://zschuessler.github.io/DeltaE/learn/#toc-delta-e-94) between
+ * two colors in the CIE LAB color space returning a value between 0.0 - 1.0 (0.0 means no difference, 1.0 means completely opposite)
+ */
 fun Color.deltaE(other: Color): Double {
     if (this == other) {
         return 0.0
     }
-    // Compute the Delta E 2000 difference between the two colors in the CIE Lch color space and return whether it's within the perceptual tolerance
+    // Delta E (1994) is in a 0-100 scale, so we need to divide by 100 to transform it to a percentage
     //
-    return min(this.difference(other) / 100, 1.0)
+    return min(this.deltaE1994(other) / 100, 1.0)
 }
 
-// Convert the color to the CIE XYZ color space within nominal range of [0.0, 1.0]
-// using sRGB color space and D65 white reference white
-// http://www.brucelindbloom.com/index.html?Calc.html
-//
-@SuppressLint("NewApi")
+/**
+ * Convert the color to the CIE XYZ color space within nominal range of [0.0, 1.0]
+ * using sRGB color space and D65 white reference white
+ */
 private fun Color.toXYZ(): DoubleArray {
     // Values must be within nominal range of [0.0, 1.0]
     //
     var r = AndroidColor.red(this.value) / 255.0
     var g = AndroidColor.green(this.value) / 255.0
     var b = AndroidColor.blue(this.value) / 255.0
-    // Log.d("SnapshotDiffing", "R: $r, G: $g, B: $b")
 
-    // Inverse sRGB Companding
+    // Inverse sRGB companding
     //
     r = if (r <= 0.04045) {
         r / 12.92
@@ -64,15 +66,12 @@ private fun Color.toXYZ(): DoubleArray {
         (0.4124564 * r + 0.3575761 * g + 0.1804375 * b),
         (0.2126729 * r + 0.7151522 * g + 0.0721750 * b),
         (0.0193339 * r + 0.1191920 * g + 0.9503041 * b)
-    ).also {
-        // Log.d("SnapshotDiffing", "X: ${it[0]}, Y: ${it[1]}, Z: ${it[2]}")
-    }
+    )
 }
 
-// Convert the color to the CIE LAB color space
-// http://www.brucelindbloom.com/index.html?Calc.html
-//
-@SuppressLint("NewApi")
+/**
+ * Convert the color to the CIE LAB color space using sRGB color space and D65 white reference white
+ */
 private fun Color.toLAB(): DoubleArray {
     val (x, y, z) = this.toXYZ()
 
@@ -111,15 +110,14 @@ private fun Color.toLAB(): DoubleArray {
         116 * fy - 16,
         500 * (fx - fy),
         200 * (fy - fz)
-    ).also {
-        // Log.d("SnapshotDiffing", "L: ${it[0]}, A: ${it[1]}, B: ${it[2]}")
-    }
+    )
 }
 
-// CalculatesDelta E (CIE 1994) between two colors in the CIE LAB color space returning a value between 0-100 (0 means no difference, 100 means completely opposite)
-// http://www.brucelindbloom.com/index.html?Eqn_DeltaE_CIE94.html
-//
-private fun Color.difference(other: Color): Double {
+/**
+ * Calculates [Delta E (1994)](http://zschuessler.github.io/DeltaE/learn/#toc-delta-e-94) between
+ * two colors in the CIE LAB color space returning a value between 0-100 (0 means no difference, 100 means completely opposite)
+ */
+private fun Color.deltaE1994(other: Color): Double {
     val (l1, a1, b1) = this.toLAB()
     val (l2, a2, b2) = other.toLAB()
 
@@ -147,7 +145,5 @@ private fun Color.difference(other: Color): Double {
         (deltaL / (kl * sl)).pow(2) +
                 (deltaC / (kc * sc)).pow(2) +
                 (deltaH / (kh * sh)).pow(2)
-    ).also {
-        // Log.d("SnapshotDiffing", "ΔE: $it")
-    }
+    )
 }

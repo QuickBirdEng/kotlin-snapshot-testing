@@ -6,11 +6,19 @@ import android.graphics.Color as AndroidColor
 
 private var maximumDeltaE: Double? = null
 
-
+/**
+ * A Bitmap comparison diffing strategy for comparing images based on pixel equality.
+ *
+ * @param colorDiffing A function that compares two colors and returns a color representing the difference.
+ * @param tolerance Total percentage of pixels that must match between image. The default value of 0.0% means all pixels must match
+ * @param perceptualTolerance Percentage each pixel can be different from source pixel and still considered
+ * a match. The default value of 0.0% means pixels must match perfectly whereas the recommended value of 0.02% mimics the
+ * [precision](http://zschuessler.github.io/DeltaE/learn/#toc-defining-delta-e) of the human eye.
+ */
 fun Diffing.Companion.bitmap(
     colorDiffing: Diffing<Color>,
     tolerance: Double = 0.0,  // 0.0 means exact match, 1.0 means completely different
-    perceptualTolerance: Double = 0.0  // 0.0 means exact match, 1.0 means completely different
+    perceptualTolerance: Double = 0.0  // 0.0 means exact match, 1.0 means allow pixels to be completely different
 ) = Diffing<Bitmap> { first, second ->
     val difference = first.differenceTo(second, perceptualTolerance)
 
@@ -62,12 +70,7 @@ private fun Bitmap.differenceTo(other: Bitmap, perceptualTolerance: Double): Dou
         // Perceptual tolerance is given in range of 0.0 (same) - 1.0 (completely different) that
         // needs to be scaled when comparing against Delta E values between 0 (same) - 100 (completely different)
         //
-        val minimumDeltaE = deltaEPixels.minOrNull() ?: 0.0
         maximumDeltaE = deltaEPixels.maxOrNull() ?: 0.0
-        val average = deltaEPixels.average()
-        val count = deltaEPixels.count()
-        val size = deltaEPixels.size
-        Log.e("SnapshotDiffing", "Minimum Delta E: $minimumDeltaE, Maximum Delta E: $maximumDeltaE, Average Delta E: $average, Count: $count, Size: $size")
         deltaEPixels.count { it > (perceptualTolerance) }
     } else {
         thisPixels
