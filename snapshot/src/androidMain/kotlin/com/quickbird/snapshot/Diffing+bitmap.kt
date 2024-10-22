@@ -53,10 +53,21 @@ private fun Bitmap.differenceTo(other: Bitmap, perceptualTolerance: Double): Dou
     val otherPixels = other.pixels
     if (thisPixels.size != otherPixels.size) return 100.0
 
-    val deltaEPixels = thisPixels
-        .zip(otherPixels, Color::deltaE)
-    val pixelDifferenceCount = deltaEPixels.count { it > (perceptualTolerance * 100) }
-    maximumDeltaE = deltaEPixels.maxOrNull() ?: 0.0
+    // Perceptually compare if the tolerance is greater than 0.0
+    //
+    val pixelDifferenceCount = if (perceptualTolerance > 0.0) {
+        val deltaEPixels = thisPixels
+            .zip(otherPixels, Color::deltaE)
+        // Perceptual tolerance is given in range of 0.0 - 1.0, this needs to be scaled
+        // when comparing against Delta E values between 0 (same) - 100 (completely different)
+        //
+        maximumDeltaE = deltaEPixels.maxOrNull() ?: 0.0
+        deltaEPixels.count { it > (perceptualTolerance * 100) }
+    } else {
+        thisPixels
+            .zip(otherPixels, Color::equals)
+            .count { !it }
+    }
 
     return pixelDifferenceCount.toDouble() / thisPixels.size
 }

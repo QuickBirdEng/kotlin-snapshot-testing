@@ -6,7 +6,6 @@ import android.util.Log
 import androidx.annotation.ColorInt
 import kotlin.collections.component1
 import kotlin.math.abs
-import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.pow
 import kotlin.math.sqrt
@@ -25,16 +24,21 @@ fun Color.deltaE(other: Color): Double {
     return min(this.difference(other) / 100, 1.0)
 }
 
-// Convert the color to the CIE XYZ color space
+// Convert the color to the CIE XYZ color space within nominal range of [0.0, 1.0]
+// using sRGB color space and D65 white reference white
 // http://www.brucelindbloom.com/index.html?Calc.html
 //
 @SuppressLint("NewApi")
 private fun Color.toXYZ(): DoubleArray {
+    // Values must be within nominal range of [0.0, 1.0]
+    //
     var r = AndroidColor.red(this.value) / 255.0
     var g = AndroidColor.green(this.value) / 255.0
     var b = AndroidColor.blue(this.value) / 255.0
     Log.d("SnapshotDiffing", "R: $r, G: $g, B: $b")
 
+    // Inverse sRGB Companding
+    //
     r = if (r <= 0.04045) {
         r / 12.92
     } else {
@@ -52,11 +56,13 @@ private fun Color.toXYZ(): DoubleArray {
     } else {
         b / 12.92
     }
-    
+
+    // Linear RGB to XYZ using sRGB color space and D65 white reference white
+    //
     return doubleArrayOf(
-        (0.4124 * r + 0.3576 * g + 0.1805 * b),
-        (0.2126 * r + 0.7152 * g + 0.0722 * b),
-        (0.0193 * r + 0.1192 * g + 0.9505 * b)
+        (0.4124564 * r + 0.3575761 * g + 0.1804375 * b),
+        (0.2126729 * r + 0.7151522 * g + 0.0721750 * b),
+        (0.0193339 * r + 0.1191920 * g + 0.9503041 * b)
     ).also {
         Log.d("SnapshotDiffing", "X: ${it[0]}, Y: ${it[1]}, Z: ${it[2]}")
     }
@@ -69,9 +75,11 @@ private fun Color.toXYZ(): DoubleArray {
 private fun Color.toLAB(): DoubleArray {
     val (x, y, z) = this.toXYZ()
 
-    val Xr = 95.047
-    val Yr = 100.0
-    val Zr = 108.883
+    // CIE standard illuminant D65
+    //
+    val Xr = 0.9504
+    val Yr = 1.000
+    val Zr = 1.0888
 
     var xr = x / Xr
     var yr = y / Yr
