@@ -2,6 +2,7 @@ package com.quickbird.snapshot
 
 import android.graphics.Bitmap
 import android.util.Log
+import java.io.File
 import android.graphics.Color as AndroidColor
 
 private var maximumDeltaE: Double? = null
@@ -62,7 +63,9 @@ private fun Bitmap.differenceTo(other: Bitmap, perceptualTolerance: Double): Dou
         // Perceptual tolerance is given in range of 0.0 (same) - 1.0 (completely different) that
         // needs to be scaled when comparing against Delta E values between 0 (same) - 100 (completely different)
         //
-        Log.d("SnapshotDiffing", deltaEPixels.toString())
+        File("somefile.txt").printWriter().use { out ->
+            out.println(deltaEPixels.toString())
+        }
         maximumDeltaE = deltaEPixels.maxOrNull() ?: 0.0
         deltaEPixels.count { it > (perceptualTolerance) }
     } else {
