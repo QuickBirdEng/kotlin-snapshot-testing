@@ -36,7 +36,7 @@ private fun Color.toXYZ(): DoubleArray {
     var r = AndroidColor.red(this.value) / 255.0
     var g = AndroidColor.green(this.value) / 255.0
     var b = AndroidColor.blue(this.value) / 255.0
-    Log.d("SnapshotDiffing", "R: $r, G: $g, B: $b")
+    // Log.d("SnapshotDiffing", "R: $r, G: $g, B: $b")
 
     // Inverse sRGB Companding
     //
@@ -65,7 +65,7 @@ private fun Color.toXYZ(): DoubleArray {
         (0.2126729 * r + 0.7151522 * g + 0.0721750 * b),
         (0.0193339 * r + 0.1191920 * g + 0.9503041 * b)
     ).also {
-        Log.d("SnapshotDiffing", "X: ${it[0]}, Y: ${it[1]}, Z: ${it[2]}")
+        // Log.d("SnapshotDiffing", "X: ${it[0]}, Y: ${it[1]}, Z: ${it[2]}")
     }
 }
 
@@ -112,7 +112,7 @@ private fun Color.toLAB(): DoubleArray {
         500 * (fx - fy),
         200 * (fy - fz)
     ).also {
-        Log.d("SnapshotDiffing", "L: ${it[0]}, A: ${it[1]}, B: ${it[2]}")
+        // Log.d("SnapshotDiffing", "L: ${it[0]}, A: ${it[1]}, B: ${it[2]}")
     }
 }
 
@@ -148,6 +148,6 @@ private fun Color.difference(other: Color): Double {
                 (deltaC / (kc * sc)).pow(2) +
                 (deltaH / (kh * sh)).pow(2)
     ).also {
-        Log.d("SnapshotDiffing", "ΔE: $it")
+        // Log.d("SnapshotDiffing", "ΔE: $it")
     }
 }
