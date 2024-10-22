@@ -15,10 +15,11 @@ fun Diffing.Companion.bitmap(
     val difference = first.differenceTo(second, perceptualTolerance)
 
     if (difference <= tolerance) {
+        Log.d("SnapshotDiffing", "Actual image difference ${difference.toString()}, required image difference ${tolerance.toString()}")
         null
     } else {
-        var log = "Actual image tolerance $difference is greater than required $tolerance"
-        if (maximumDeltaE != null) log += ", Actual perceptual tolerance $maximumDeltaE is greater than required $perceptualTolerance"
+        var log = "Actual image difference ${difference.toString()} is greater than max allowed ${tolerance.toString()}"
+        if (maximumDeltaE != null) log += ", Actual perceptual difference ${maximumDeltaE.toString()} is greater than max allowed ${perceptualTolerance.toString()}"
         Log.e("SnapshotDiffing", log)
 
         first.copy(first.config!!, true).apply {
