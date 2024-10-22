@@ -1,8 +1,6 @@
 package com.quickbird.snapshot
 
-import android.annotation.SuppressLint
 import android.graphics.Color as AndroidColor
-import android.util.Log
 import androidx.annotation.ColorInt
 import kotlin.collections.component1
 import kotlin.math.abs
