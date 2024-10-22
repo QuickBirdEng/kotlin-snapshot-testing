@@ -33,30 +33,26 @@ private fun Color.toXYZ(): DoubleArray {
     var r = AndroidColor.red(this.value) / 255.0
     var g = AndroidColor.green(this.value) / 255.0
     var b = AndroidColor.blue(this.value) / 255.0
+    Log.d("SnapshotDiffing", "R: $r, G: $g, B: $b")
 
-    r = if (r > 0.04045) {
-        ((r + 0.055) / 1.055).pow(2.4)
+    r = if (r <= 0.04045) {
+        r / 12.92
     } else {
-        r / 12.92;
+        ((r + 0.055) / 1.055).pow(2.4)
     }
 
     g = if (g > 0.04045) {
         ((g + 0.055) / 1.055).pow(2.4)
     } else {
-        g / 12.92;
+        g / 12.92
     }
 
     b = if (b > 0.04045) {
         ((b + 0.055) / 1.055).pow(2.4)
     } else {
-        b / 12.92;
+        b / 12.92
     }
-
-    r *= 100
-    g *= 100
-    b *= 100
-    Log.d("SnapshotDiffing", "R: $r, G: $g, B: $b");
-
+    
     return doubleArrayOf(
         (0.4124 * r + 0.3576 * g + 0.1805 * b),
         (0.2126 * r + 0.7152 * g + 0.0722 * b),
@@ -85,13 +81,13 @@ private fun Color.toLAB(): DoubleArray {
     val k = 903.3
 
     val fx = if ( xr > e ) {
-        xr.pow(1/3)
+        xr.pow(1 / 3)
     } else {
         ((k * xr) + 16 / 116.0)
     }
 
     val fy = if ( yr > e ) {
-        yr.pow(1/3)
+        yr.pow(1 / 3)
     } else {
         ((k * yr) + 16 / 116.0)
     }
