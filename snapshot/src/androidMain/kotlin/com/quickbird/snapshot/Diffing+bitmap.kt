@@ -52,18 +52,19 @@ val Diffing.Companion.intMean
 private fun Bitmap.differenceTo(other: Bitmap, perceptualTolerance: Double): Double {
     val thisPixels = this.pixels
     val otherPixels = other.pixels
-    if (thisPixels.size != otherPixels.size) return 100.0
+    if (thisPixels.size != otherPixels.size) return 1.0
 
     // Perceptually compare if the tolerance is greater than 0.0
     //
     val pixelDifferenceCount = if (perceptualTolerance > 0.0) {
         val deltaEPixels = thisPixels
             .zip(otherPixels, Color::deltaE)
-        // Perceptual tolerance is given in range of 0.0 - 1.0, this needs to be scaled
-        // when comparing against Delta E values between 0 (same) - 100 (completely different)
+        // Perceptual tolerance is given in range of 0.0 (same) - 1.0 (completely different) that
+        // needs to be scaled when comparing against Delta E values between 0 (same) - 100 (completely different)
         //
+        Log.d("SnapshotDiffing", deltaEPixels.toString())
         maximumDeltaE = deltaEPixels.maxOrNull() ?: 0.0
-        deltaEPixels.count { it > (perceptualTolerance * 100) }
+        deltaEPixels.count { it > (perceptualTolerance) }
     } else {
         thisPixels
             .zip(otherPixels, Color::equals)
