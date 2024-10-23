@@ -27,14 +27,16 @@ fun Diffing.Companion.bitmap(
         null
     } else {
         var log = "Actual image difference ${difference.toBigDecimal().toPlainString()} is greater than max allowed ${tolerance.toBigDecimal().toPlainString()}"
-        if (maximumDeltaE != null) log += ", Actual perceptual difference ${maximumDeltaE.toString()} is greater than max allowed ${perceptualTolerance.toBigDecimal().toPlainString()}"
+        maximumDeltaE?.let { log += ", Actual perceptual difference ${it.toBigDecimal().toPlainString()} is greater than max allowed ${perceptualTolerance.toBigDecimal().toPlainString()}" }
         Log.e("SnapshotDiffing", log)
 
-        first.copy(first.config!!, true).apply {
-            updatePixels { x, y, color ->
-                if (x < second.width && y < second.height)
-                    colorDiffing(color, second.getPixel(x, y).color) ?: color
-                else color
+        first.config?.let {
+            first.copy(it, true).apply {
+                updatePixels { x, y, color ->
+                    if (x < second.width && y < second.height)
+                        colorDiffing(color, second.getPixel(x, y).color) ?: color
+                    else color
+                }
             }
         }
     }
