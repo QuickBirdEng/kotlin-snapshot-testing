@@ -17,8 +17,8 @@ private var maximumDeltaE: Double? = null
  */
 fun Diffing.Companion.bitmap(
     colorDiffing: Diffing<Color>,
-    tolerance: Double = 0.0,  // 0.0 means exact match, 1.0 means completely different
-    perceptualTolerance: Double = 0.0  // 0.0 means exact match, 1.0 means allow pixels to be completely different
+    tolerance: Double = 0.0,
+    perceptualTolerance: Double = 0.0
 ) = Diffing<Bitmap> { first, second ->
     val difference = first.differenceTo(second, perceptualTolerance)
 
@@ -71,7 +71,12 @@ private fun Bitmap.differenceTo(other: Bitmap, perceptualTolerance: Double): Dou
             .zip(otherPixels, Color::deltaE)
         // Find the maximum delta E value for logging purposes
         //
+        val minimumDeltaE = deltaEPixels.minOrNull() ?: 0.0
         maximumDeltaE = deltaEPixels.maxOrNull() ?: 0.0
+        val average = deltaEPixels.average()
+        val count = deltaEPixels.count()
+        val size = deltaEPixels.size
+        Log.e("SnapshotDiffing", "Minimum Delta E: $minimumDeltaE, Maximum Delta E: ${maximumDeltaE!!.toBigDecimal().toPlainString()}, Average Delta E: $average, Count: $count, Size: $size")
         deltaEPixels.count { it > (perceptualTolerance) }
     } else {
         thisPixels
