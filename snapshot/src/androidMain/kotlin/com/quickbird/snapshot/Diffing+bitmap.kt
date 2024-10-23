@@ -23,11 +23,11 @@ fun Diffing.Companion.bitmap(
     val difference = first.differenceTo(second, perceptualTolerance)
 
     if (difference <= tolerance) {
-        Log.d("SnapshotDiffing", "Actual image difference ${difference.toString()}, required image difference ${tolerance.toString()}")
+        Log.d("SnapshotDiffing", "Actual image difference ${difference.toBigDecimal().toPlainString()}, required image difference ${tolerance.toBigDecimal().toPlainString()}")
         null
     } else {
-        var log = "Actual image difference ${difference.toString()} is greater than max allowed ${tolerance.toString()}"
-        if (maximumDeltaE != null) log += ", Actual perceptual difference ${maximumDeltaE.toString()} is greater than max allowed ${perceptualTolerance.toString()}"
+        var log = "Actual image difference ${difference.toBigDecimal().toPlainString()} is greater than max allowed ${tolerance.toBigDecimal().toPlainString()}"
+        if (maximumDeltaE != null) log += ", Actual perceptual difference ${maximumDeltaE.toString()} is greater than max allowed ${perceptualTolerance.toBigDecimal().toPlainString()}"
         Log.e("SnapshotDiffing", log)
 
         first.copy(first.config!!, true).apply {
@@ -67,8 +67,7 @@ private fun Bitmap.differenceTo(other: Bitmap, perceptualTolerance: Double): Dou
     val pixelDifferenceCount = if (perceptualTolerance > 0.0) {
         val deltaEPixels = thisPixels
             .zip(otherPixels, Color::deltaE)
-        // Perceptual tolerance is given in range of 0.0 (same) - 1.0 (completely different) that
-        // needs to be scaled when comparing against Delta E values between 0 (same) - 100 (completely different)
+        // Find the maximum delta E value for logging purposes
         //
         maximumDeltaE = deltaEPixels.maxOrNull() ?: 0.0
         deltaEPixels.count { it > (perceptualTolerance) }
