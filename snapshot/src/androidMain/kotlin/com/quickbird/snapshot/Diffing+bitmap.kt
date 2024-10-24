@@ -30,7 +30,7 @@ fun Diffing.Companion.bitmap(
         maximumDeltaE?.let { log += ", Actual perceptual difference ${it.toBigDecimal().toPlainString()} is greater than max allowed ${perceptualTolerance.toBigDecimal().toPlainString()}" }
         Log.e("SnapshotDiffing", log)
 
-        first.config?.let {
+        first.config.let {
             first.copy(it, true).apply {
                 updatePixels { x, y, color ->
                     if (x < second.width && y < second.height)
