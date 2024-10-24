@@ -71,12 +71,7 @@ private fun Bitmap.differenceTo(other: Bitmap, perceptualTolerance: Double): Dou
             .zip(otherPixels, Color::deltaE)
         // Find the maximum delta E value for logging purposes
         //
-        val minimumDeltaE = deltaEPixels.minOrNull() ?: 0.0
         maximumDeltaE = deltaEPixels.maxOrNull() ?: 0.0
-        val average = deltaEPixels.average()
-        val count = deltaEPixels.count()
-        val size = deltaEPixels.size
-        Log.e("SnapshotDiffing", "Minimum Delta E: $minimumDeltaE, Maximum Delta E: ${maximumDeltaE!!.toBigDecimal().toPlainString()}, Average Delta E: $average, Count: $count, Size: $size")
         deltaEPixels.count { it > (perceptualTolerance) }
     } else {
         thisPixels
