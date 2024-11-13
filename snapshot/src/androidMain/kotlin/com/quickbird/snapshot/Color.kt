@@ -40,30 +40,16 @@ private fun Color.toXYZ(): DoubleArray {
 
     // Inverse sRGB companding
     //
-    r = if (r <= 0.04045) {
-        r / 12.92
-    } else {
-        ((r + 0.055) / 1.055).pow(2.4)
-    }
-
-    g = if (g > 0.04045) {
-        ((g + 0.055) / 1.055).pow(2.4)
-    } else {
-        g / 12.92
-    }
-
-    b = if (b > 0.04045) {
-        ((b + 0.055) / 1.055).pow(2.4)
-    } else {
-        b / 12.92
-    }
+    r = if (r <= 0.04045) r / 12.92 else ((r + 0.055) / 1.055).pow(2.4)
+    g = if (g <= 0.04045) g / 12.92 else ((g + 0.055) / 1.055).pow(2.4)
+    b = if (b <= 0.04045) b / 12.92 else ((b + 0.055) / 1.055).pow(2.4)
 
     // Linear RGB to XYZ using sRGB color space and D65 white reference white
     //
     return doubleArrayOf(
-        (0.4124564 * r + 0.3575761 * g + 0.1804375 * b),
-        (0.2126729 * r + 0.7151522 * g + 0.0721750 * b),
-        (0.0193339 * r + 0.1191920 * g + 0.9503041 * b)
+        0.4124564 * r + 0.3575761 * g + 0.1804375 * b,
+        0.2126729 * r + 0.7151522 * g + 0.0721750 * b,
+        0.0193339 * r + 0.1191920 * g + 0.9503041 * b
     )
 }
 
@@ -79,30 +65,16 @@ private fun Color.toLAB(): DoubleArray {
     val Yr = 1.000
     val Zr = 1.0888
 
-    var xr = x / Xr
-    var yr = y / Yr
-    var zr = z / Zr
+    val xr = x / Xr
+    val yr = y / Yr
+    val zr = z / Zr
 
     val e = 0.008856
     val k = 903.3
 
-    val fx = if ( xr > e ) {
-        cbrt(xr)
-    } else {
-        ((k * xr) + 16) / 116.0
-    }
-
-    val fy = if ( yr > e ) {
-        cbrt(yr)
-    } else {
-        ((k * yr) + 16) / 116.0
-    }
-
-    val fz = if ( zr > e ) {
-        cbrt(zr)
-    } else {
-        ((k * zr) + 16) / 116.0
-    }
+    val fx = if (xr > e) cbrt(xr) else ((k * xr) + 16) / 116.0
+    val fy = if (yr > e) cbrt(yr) else ((k * yr) + 16) / 116.0
+    val fz = if (zr > e) cbrt(zr) else ((k * zr) + 16) / 116.0
 
     return doubleArrayOf(
         116 * fy - 16,
@@ -120,11 +92,9 @@ private fun Color.deltaE1994(other: Color): Double {
     val (l2, a2, b2) = other.toLAB()
 
     val deltaL = l1 - l2
-
     val c1 = sqrt(a1.pow(2) + b1.pow(2))
     val c2 = sqrt(a2.pow(2) + b2.pow(2))
     val deltaC = c1 - c2
-
     val deltaA = a1 - a2
     val deltaB = b1 - b2
     val deltaH = sqrt(abs(deltaA.pow(2) + deltaB.pow(2) - deltaC.pow(2)))
