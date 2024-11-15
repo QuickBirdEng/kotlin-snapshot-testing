@@ -31,56 +31,22 @@ fun Color.deltaE(other: Color): Double {
  * Convert the color to the CIE XYZ color space within nominal range of [0.0, 1.0]
  * using sRGB color space and D65 white reference white
  */
-private fun Color.toXYZ(): DoubleArray {
-    // Values must be within nominal range of [0.0, 1.0]
-    //
-    var r = AndroidColor.red(this.value) / 255.0
-    var g = AndroidColor.green(this.value) / 255.0
-    var b = AndroidColor.blue(this.value) / 255.0
-
-    // Inverse sRGB companding
-    //
-    r = if (r <= 0.04045) r / 12.92 else ((r + 0.055) / 1.055).pow(2.4)
-    g = if (g <= 0.04045) g / 12.92 else ((g + 0.055) / 1.055).pow(2.4)
-    b = if (b <= 0.04045) b / 12.92 else ((b + 0.055) / 1.055).pow(2.4)
-
-    // Linear RGB to XYZ using sRGB color space and D65 white reference white
-    //
-    return doubleArrayOf(
-        0.4124564 * r + 0.3575761 * g + 0.1804375 * b,
-        0.2126729 * r + 0.7151522 * g + 0.0721750 * b,
-        0.0193339 * r + 0.1191920 * g + 0.9503041 * b
-    )
-}
-
 /**
  * Convert the color to the CIE LAB color space using sRGB color space and D65 white reference white
  */
-private fun Color.toLAB(): DoubleArray {
-    val (x, y, z) = this.toXYZ()
-
-    // CIE standard illuminant D65
-    //
-    val Xr = 0.9504
-    val Yr = 1.000
-    val Zr = 1.0888
-
-    val xr = x / Xr
-    val yr = y / Yr
-    val zr = z / Zr
-
-    val e = 0.008856
-    val k = 903.3
-
-    val fx = if (xr > e) cbrt(xr) else ((k * xr) + 16) / 116.0
-    val fy = if (yr > e) cbrt(yr) else ((k * yr) + 16) / 116.0
-    val fz = if (zr > e) cbrt(zr) else ((k * zr) + 16) / 116.0
-
-    return doubleArrayOf(
-        116 * fy - 16,
-        500 * (fx - fy),
-        200 * (fy - fz)
+private fun Color.toLAB(): FloatArray {
+    val labConnector = ColorSpace.connect(
+        ColorSpace.get(ColorSpace.Named.SRGB),
+        ColorSpace.get(ColorSpace.Named.CIE_LAB)
     )
+
+    val rgb = floatArrayOf(
+        AndroidColor.red(value) / 255.0f,
+        AndroidColor.green(value) / 255.0f,
+        AndroidColor.blue(value) / 255.0f
+    )
+
+    return labConnector.transform(rgb[0], rgb[1], rgb[2])
 }
 
 /**
