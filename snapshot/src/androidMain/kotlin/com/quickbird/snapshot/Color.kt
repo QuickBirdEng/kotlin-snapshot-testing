@@ -28,10 +28,6 @@ fun Color.deltaE(other: Color): Double {
 }
 
 /**
- * Convert the color to the CIE XYZ color space within nominal range of [0.0, 1.0]
- * using sRGB color space and D65 white reference white
- */
-/**
  * Convert the color to the CIE LAB color space using sRGB color space and D65 white reference white
  */
 private fun Color.toLAB(): FloatArray {
