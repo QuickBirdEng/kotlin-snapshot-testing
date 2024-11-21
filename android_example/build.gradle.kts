@@ -5,11 +5,11 @@ plugins {
 
 @Suppress("UnstableApiUsage")
 android {
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.quickbird.android_example"
-        minSdk = 21
+        minSdk = 26
         targetSdk = 33
         versionCode = 1
         versionName = "1.0"
